@@ -10,7 +10,7 @@ router.get('/', async (req, res) => {
     res.status(200);
     res.json(JSON.parse(data));
   } catch (err) {
-    console.log(err);
+    res.status(500).send({ message: `Internal server error: ${err}` });
   }
 });
 router.get('/:id', async (req, res) => {
@@ -27,7 +27,7 @@ router.get('/:id', async (req, res) => {
       res.json({ message: 'Card ID not found' });
     }
   } catch (err) {
-    console.log(err);
+    res.status(500).send({ message: `Internal server error: ${err}` });
   }
 });
 
