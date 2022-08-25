@@ -2,26 +2,33 @@ const router = require('express').Router();
 const fs = require('fs');
 const path = require('path');
 
-fs.readFile(path.join(__dirname, '/../data/cards.json'), (err, data) => {
-  if (err) {
-    console.log(`error in reading cards, error: ${err}`);
-    return;
-  }
-  const dataParsed = JSON.parse(data);
-  router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
+  try {
+    const data = await fs.promises.readFile(
+      path.join(__dirname, '/../data/cards.json'),
+    );
     res.status(200);
-    res.json(dataParsed);
-  });
-  router.get('/:id', (req, res) => {
-    const card = dataParsed.filter((item) => item._id === req.params.id);
-    if (card.length === 1) {
+    res.json(JSON.parse(data));
+  } catch (err) {
+    console.log(err);
+  }
+});
+router.get('/:id', async (req, res) => {
+  try {
+    const data = await fs.promises.readFile(
+      path.join(__dirname, '/../data/cards.json'),
+    );
+    const card = JSON.parse(data).find((item) => item._id === req.params.id);
+    if (card) {
       res.status(200);
-      res.json(card[0]);
+      res.json(card);
     } else {
       res.status(404);
       res.json({ message: 'Card ID not found' });
     }
-  });
+  } catch (err) {
+    console.log(err);
+  }
 });
 
 module.exports = router;
