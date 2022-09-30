@@ -73,12 +73,19 @@ module.exports.updateProfile = (req, res) => {
     { name, about },
     { new: true, runValidators: true },
   )
+    .orFail()
     .then((user) => res.status(200).send(user))
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
         res
           .status(responseStatus.badRequest.code)
           .send(responseStatus.badRequest.message(err.message));
+        return;
+      }
+      if (err.name === 'DocumentNotFoundError') {
+        res
+          .status(responseStatus.notFound.code)
+          .send(responseStatus.notFound.message());
         return;
       }
       res
@@ -91,12 +98,19 @@ module.exports.updateAvatar = (req, res) => {
   const { avatar } = req.body;
   const { _id } = req.user;
   User.findByIdAndUpdate(_id, { avatar }, { new: true, runValidators: true })
+    .orFail()
     .then((user) => res.status(responseStatus.success.code).send(user))
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
         res
           .status(responseStatus.badRequest.code)
           .send(responseStatus.badRequest.message(err.message));
+        return;
+      }
+      if (err.name === 'DocumentNotFoundError') {
+        res
+          .status(responseStatus.notFound.code)
+          .send(responseStatus.notFound.message());
         return;
       }
       res
