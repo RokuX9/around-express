@@ -1,7 +1,8 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const { serverURL } = require('./utils/utils');
 
-mongoose.connect('mongodb://localhost:27017/aroundb');
+mongoose.connect(serverURL);
 
 const { PORT = 3000 } = process.env;
 const cardsRoute = require('./routes/cards');
